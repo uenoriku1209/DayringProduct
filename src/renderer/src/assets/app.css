@@ -2184,3 +2184,229 @@ input[type='range'] {
 .form-foot .btn {
   white-space: nowrap;
 }
+
+/* ==========================================================
+   重ねて表示する画面は、ウィンドウを動かすドラッグ領域より優先する
+   (Windows では、下にあるドラッグ領域にクリックを取られてボタンが反応しなくなるため)
+   ========================================================== */
+
+.sheet-backdrop,
+.sheet,
+.sheet *,
+.event-overlay {
+  -webkit-app-region: no-drag;
+}
+.row.wrap {
+  flex-wrap: wrap;
+}
+
+/* ==========================================================
+   簡易表示 (日付・時刻・いまの予定だけ)
+   ========================================================== */
+
+.widget.compact-mode {
+  border-radius: 18px;
+  container-type: size;
+}
+.compact {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 14px 0 16px;
+  cursor: default;
+}
+.c-clock {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.c-time {
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.c-colon {
+  color: var(--a1);
+  animation: blink 1s steps(1) infinite;
+  margin: 0 1px;
+}
+.c-ss {
+  font-size: 12px;
+  margin-left: 4px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.c-date {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.c-plan-area {
+  flex: 1;
+  min-width: 0;
+}
+.c-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.c-plan-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.c-plan .dot {
+  box-shadow: 0 0 6px var(--c);
+}
+.c-title {
+  font-weight: 700;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.c-plan.next .c-title {
+  font-weight: 600;
+  color: var(--text-2);
+}
+.c-remain {
+  font-size: 11.5px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.c-until {
+  margin-left: 5px;
+  color: var(--muted);
+}
+.c-bar {
+  height: 3px;
+  border-radius: 3px;
+  background: var(--track);
+  overflow: hidden;
+}
+.c-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--c);
+  transition: width 1s linear;
+}
+.c-plan.empty {
+  font-size: 12px;
+  color: var(--muted);
+}
+/* ボタンはマウスを乗せたときだけ出す */
+.c-actions {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  display: flex;
+  gap: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.compact-mode:hover .c-actions {
+  opacity: 1;
+}
+.c-actions .icon-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: rgba(var(--bg-rgb), 0.7);
+}
+.compact-mode .resize-grip {
+  right: 2px;
+  bottom: 2px;
+  width: 12px;
+  height: 12px;
+  opacity: 0;
+}
+.compact-mode:hover .resize-grip {
+  opacity: 0.45;
+}
+
+/* 小さくするほど省く */
+@container (max-width: 250px) {
+  .c-until {
+    display: none;
+  }
+  .c-time {
+    font-size: 28px;
+  }
+  .compact {
+    gap: 10px;
+    padding: 0 10px 0 12px;
+  }
+}
+@container (max-width: 205px) {
+  .c-ss,
+  .c-date {
+    display: none;
+  }
+  .c-time {
+    font-size: 24px;
+  }
+  .c-bar {
+    display: none;
+  }
+}
+@container (max-height: 70px) {
+  .c-date,
+  .c-bar {
+    display: none;
+  }
+  .c-time {
+    font-size: 26px;
+  }
+}
+@container (max-height: 70px) and (max-width: 205px) {
+  .c-remain {
+    display: none;
+  }
+}
+/* 横に広くしたときは、予定を大きめに */
+@container (min-width: 360px) {
+  .c-time {
+    font-size: 40px;
+  }
+  .c-title {
+    font-size: 15px;
+  }
+}
+
+/* 簡易表示での予定の開始・終了: 小さな画面に合わせて静かに */
+.compact-mode .event-overlay .soap-orb,
+.compact-mode .event-overlay .ev-time,
+.compact-mode .event-overlay .ev-sub {
+  display: none;
+}
+.compact-mode .event-overlay .ev-stage {
+  gap: 2px;
+  padding: 0 12px;
+}
+.compact-mode .event-overlay .ev-title {
+  font-size: 16px;
+}
+.compact-mode .event-overlay .ev-remain {
+  font-size: 11px;
+  animation-delay: 1s;
+}
+.compact-mode .event-overlay .ev-remain .rolling {
+  font-size: 13px;
+}
+.compact-mode .bubble-field {
+  zoom: 0.6;
+}

@@ -36,25 +36,39 @@ export function saveData(data: AppData): void {
   renameSync(tmp, path)
 }
 
-interface Bounds {
+export interface Bounds {
   x: number
   y: number
   width: number
   height: number
 }
+/** 通常表示と簡易表示それぞれの位置・大きさ */
+export interface SavedBounds {
+  normal?: Bounds
+  compact?: Bounds
+}
 const boundsFile = (): string => join(app.getPath('userData'), 'window.json')
 
-export function loadBounds(): Bounds | null {
+const valid = (b: unknown): b is Bounds =>
+  !!b &&
+  typeof b === 'object' &&
+  ['x', 'y', 'width', 'height'].every((k) => Number.isFinite((b as Record<string, number>)[k]))
+
+export function loadBounds(): SavedBounds {
   try {
-    const b = JSON.parse(readFileSync(boundsFile(), 'utf8')) as Bounds
-    if ([b.x, b.y, b.width, b.height].every((n) => Number.isFinite(n))) return b
+    const raw = JSON.parse(readFileSync(boundsFile(), 'utf8'))
+    // 以前の形式 (通常表示の位置だけ) にも対応
+    if (valid(raw)) return { normal: raw }
+    return {
+      normal: valid(raw?.normal) ? raw.normal : undefined,
+      compact: valid(raw?.compact) ? raw.compact : undefined
+    }
   } catch {
-    /* 初回 */
+    return {}
   }
-  return null
 }
 
-export function saveBounds(b: Bounds): void {
+export function saveBounds(b: SavedBounds): void {
   try {
     writeFileSync(boundsFile(), JSON.stringify(b), 'utf8')
   } catch {

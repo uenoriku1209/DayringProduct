@@ -1,4 +1,5 @@
-import { Moon, Power, RotateCcw, Sun, X } from 'lucide-react'
+import { useEffect } from 'react'
+import { Moon, Power, RotateCcw, Shrink, Sun, X } from 'lucide-react'
 import type { Settings } from '../../../shared/types'
 
 interface Props {
@@ -38,6 +39,15 @@ function Toggle({
 }
 
 export function SettingsPanel({ settings: s, onChange, onClose }: Props): React.JSX.Element {
+  // Esc でも閉じる
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
   return (
     <div className="sheet-backdrop" onClick={onClose}>
       <div className="sheet" onClick={(e) => e.stopPropagation()}>
@@ -111,7 +121,16 @@ export function SettingsPanel({ settings: s, onChange, onClose }: Props): React.
             上部をドラッグで移動、右下の角で大きさを変更できます。Ctrl+Alt+D
             でいつでも表示・非表示を切り替えられます。
           </p>
-          <div className="row gap">
+          <div className="row gap wrap">
+            <button
+              className="btn"
+              onClick={() => {
+                onClose()
+                onChange({ compact: true })
+              }}
+            >
+              <Shrink size={14} /> 簡易表示にする
+            </button>
             <button className="btn" onClick={() => window.api.resetPosition()}>
               <RotateCcw size={14} /> 位置を右上に戻す
             </button>

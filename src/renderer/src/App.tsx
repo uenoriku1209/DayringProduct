@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { CalendarClock, Target, TrendingUp } from 'lucide-react'
 import type { AppData, Settings } from '../../shared/types'
 import { useNow } from './lib/useNow'
-import { activePlan } from './lib/plans'
+import { activePlan, nextPlan } from './lib/plans'
 import { usePlanEvents } from './lib/usePlanEvents'
 import { Header } from './components/Header'
 import { ClockCard } from './components/ClockCard'
@@ -13,6 +13,7 @@ import { SettingsPanel } from './components/SettingsPanel'
 import { ResizeGrip } from './components/ResizeGrip'
 import { PlanEvents } from './components/PlanEvents'
 import { Water } from './components/Water'
+import { CompactView } from './components/CompactView'
 
 type Tab = 'plan' | 'goal' | 'growth'
 
@@ -59,6 +60,7 @@ export default function App(): React.JSX.Element {
     update((d) => ({ ...d, settings: { ...d.settings, ...patch } }))
     if (patch.alwaysOnTop !== undefined) window.api.setAlwaysOnTop(patch.alwaysOnTop)
     if (patch.autoLaunch !== undefined) window.api.setAutoLaunch(patch.autoLaunch)
+    if (patch.compact !== undefined) window.api.setCompact(patch.compact)
   }
 
   useEffect(() => {
@@ -70,6 +72,34 @@ export default function App(): React.JSX.Element {
   const s = data.settings
   const active = activePlan(data.plans, t)
 
+  const water = s.water && (
+    <Water
+      className="day-water"
+      level={(t.getHours() * 3600 + t.getMinutes() * 60 + t.getSeconds()) / 86400}
+      bubbles={!s.compact}
+    />
+  )
+
+  // 簡易表示: 日付・時刻・いまの予定だけ
+  if (s.compact)
+    return (
+      <div
+        className="widget compact-mode"
+        data-theme={s.theme}
+        style={{ '--op': s.opacity } as React.CSSProperties}
+      >
+        {water}
+        <CompactView
+          t={t}
+          active={active}
+          next={nextPlan(data.plans, t)}
+          onExpand={() => setSettings({ compact: false })}
+        />
+        <PlanEvents events={events} t={t} onDone={dismiss} />
+        <ResizeGrip />
+      </div>
+    )
+
   return (
     <div
       className="widget"
@@ -77,15 +107,14 @@ export default function App(): React.JSX.Element {
       style={{ '--op': s.opacity } as React.CSSProperties}
     >
       {/* 1 日の経過とともに、下から静かに水が溜まっていく */}
-      {s.water && (
-        <Water
-          className="day-water"
-          level={(t.getHours() * 3600 + t.getMinutes() * 60 + t.getSeconds()) / 86400}
-        />
-      )}
+      {water}
       <Header
         pinned={s.alwaysOnTop}
         onPin={() => setSettings({ alwaysOnTop: !s.alwaysOnTop })}
+        onCompact={() => {
+          setSettingsOpen(false)
+          setSettings({ compact: true })
+        }}
         onSettings={() => setSettingsOpen(true)}
       />
       <ClockCard t={t} active={active} onShowPlan={() => setTab('plan')} />

@@ -50,6 +50,8 @@ export interface Settings {
   opacity: number
   /** 時間の経過で水が溜まっていく演出 */
   water: boolean
+  /** 簡易表示 (日付・時刻・いまの予定だけの小さな表示) */
+  compact: boolean
 }
 
 export interface AppData {
@@ -66,7 +68,8 @@ export const DEFAULT_SETTINGS: Settings = {
   theme: 'dark',
   notify: true,
   opacity: 0.92,
-  water: true
+  water: true,
+  compact: false
 }
 
 export function emptyData(): AppData {
@@ -82,6 +85,8 @@ export interface WidgetApi {
   quit(): void
   setAlwaysOnTop(on: boolean): void
   setAutoLaunch(on: boolean): void
+  /** 簡易表示の切り替え (ウィンドウの大きさも変わる) */
+  setCompact(on: boolean): void
   resetPosition(): void
   /** 右下のつまみで大きさを変える (開始時の大きさからの差分) */
   resizeBy(startW: number, startH: number, dw: number, dh: number): void

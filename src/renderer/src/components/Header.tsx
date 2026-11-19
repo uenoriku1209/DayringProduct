@@ -1,13 +1,14 @@
-import { Minus, Pin, PinOff, Settings2 } from 'lucide-react'
+import { Minus, Pin, PinOff, Settings2, Shrink } from 'lucide-react'
 
 interface Props {
   pinned: boolean
   onPin: () => void
   onSettings: () => void
+  onCompact: () => void
 }
 
 /** 上部 (ここをドラッグしてウィジェットを動かす) */
-export function Header({ pinned, onPin, onSettings }: Props): React.JSX.Element {
+export function Header({ pinned, onPin, onSettings, onCompact }: Props): React.JSX.Element {
   return (
     <header className="header drag">
       <div className="brand">
@@ -21,6 +22,13 @@ export function Header({ pinned, onPin, onSettings }: Props): React.JSX.Element 
           title={pinned ? '常に手前に表示: オン' : '常に手前に表示: オフ'}
         >
           {pinned ? <Pin size={14} /> : <PinOff size={14} />}
+        </button>
+        <button
+          className="icon-btn"
+          onClick={onCompact}
+          title="簡易表示（日付・時刻・いまの予定だけの小さな表示）"
+        >
+          <Shrink size={14} />
         </button>
         <button className="icon-btn" onClick={onSettings} title="設定">
           <Settings2 size={14} />

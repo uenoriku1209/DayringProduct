@@ -8,6 +8,7 @@ const api: WidgetApi = {
   quit: () => ipcRenderer.send('app:quit'),
   setAlwaysOnTop: (on) => ipcRenderer.send('win:alwaysOnTop', on),
   setAutoLaunch: (on) => ipcRenderer.send('app:autoLaunch', on),
+  setCompact: (on) => ipcRenderer.send('win:compact', on),
   resetPosition: () => ipcRenderer.send('win:resetPosition'),
   resizeBy: (w0, h0, dw, dh) => ipcRenderer.send('win:resizeBy', w0, h0, dw, dh),
   getSize: () => ipcRenderer.invoke('win:getSize'),
