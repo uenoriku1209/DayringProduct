@@ -1,9 +1,17 @@
 import { app } from 'electron'
 import { existsSync, readFileSync, renameSync, writeFileSync } from 'fs'
 import { join } from 'path'
-import { DEFAULT_SETTINGS, emptyData, type AppData } from '../shared/types'
+import { DEFAULT_SETTINGS, emptyData, type AppData, type Settings } from '../shared/types'
 
 const file = (): string => join(app.getPath('userData'), 'dayring.json')
+
+/**
+ * 以前の初期値 (背景の濃さ 92%) のままなら、新しい初期値の 100% にする。
+ * 92% だと、後ろに明るいウィンドウが重なったときに透けて見えていたため。
+ */
+function migrateSettings(s: Settings): Settings {
+  return s.opacity === 0.92 ? { ...s, opacity: 1 } : s
+}
 
 /** 保存データを読み込む (壊れていたら、壊れたファイルを残して空で始める) */
 export function loadData(): AppData {
@@ -16,7 +24,7 @@ export function loadData(): AppData {
       goals: Array.isArray(raw.goals) ? raw.goals : [],
       habits: Array.isArray(raw.habits) ? raw.habits : [],
       plans: Array.isArray(raw.plans) ? raw.plans : [],
-      settings: { ...DEFAULT_SETTINGS, ...(raw.settings ?? {}) }
+      settings: migrateSettings({ ...DEFAULT_SETTINGS, ...(raw.settings ?? {}) })
     }
   } catch {
     try {

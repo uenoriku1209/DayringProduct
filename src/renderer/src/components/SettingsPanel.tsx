@@ -39,6 +39,7 @@ function Toggle({
 }
 
 export function SettingsPanel({ settings: s, onChange, onClose }: Props): React.JSX.Element {
+  const op = s.opacity
   // Esc でも閉じる
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
@@ -78,13 +79,14 @@ export function SettingsPanel({ settings: s, onChange, onClose }: Props): React.
 
         <div className="setting-group">
           <div className="setting-label">
-            背景の濃さ <span className="muted">{Math.round(s.opacity * 100)}%</span>
+            背景の濃さ（100% で後ろのウィンドウが透けない）
+            <span className="muted">{Math.round(op * 100)}%</span>
           </div>
           <input
             type="range"
             min={55}
             max={100}
-            value={Math.round(s.opacity * 100)}
+            value={Math.round(op * 100)}
             onChange={(e) => onChange({ opacity: Number(e.target.value) / 100 })}
           />
         </div>

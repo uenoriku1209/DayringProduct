@@ -46,7 +46,10 @@ export interface Settings {
   theme: 'dark' | 'light'
   /** 予定の開始時に Windows の通知も出す */
   notify: boolean
-  /** 背景の不透明度 (0.55〜1) */
+  /**
+   * 背景の不透明度 (0.55〜1)。1 なら後ろのウィンドウは透けない。
+   * 初期値は 1 (以前は 0.92 で、後ろに明るいウィンドウがあると透けて見えた)
+   */
   opacity: number
   /** 時間の経過で水が溜まっていく演出 */
   water: boolean
@@ -67,7 +70,7 @@ export const DEFAULT_SETTINGS: Settings = {
   autoLaunch: false,
   theme: 'dark',
   notify: true,
-  opacity: 0.92,
+  opacity: 1,
   water: true,
   compact: false
 }

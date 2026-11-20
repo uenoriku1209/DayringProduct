@@ -70,6 +70,7 @@ export default function App(): React.JSX.Element {
   if (!data) return <div className="widget loading" />
 
   const s = data.settings
+  const op = s.opacity
   const active = activePlan(data.plans, t)
 
   const water = s.water && (
@@ -86,7 +87,7 @@ export default function App(): React.JSX.Element {
       <div
         className="widget compact-mode"
         data-theme={s.theme}
-        style={{ '--op': s.opacity } as React.CSSProperties}
+        style={{ '--op': op } as React.CSSProperties}
       >
         {water}
         <CompactView
@@ -101,11 +102,7 @@ export default function App(): React.JSX.Element {
     )
 
   return (
-    <div
-      className="widget"
-      data-theme={s.theme}
-      style={{ '--op': s.opacity } as React.CSSProperties}
-    >
+    <div className="widget" data-theme={s.theme} style={{ '--op': op } as React.CSSProperties}>
       {/* 1 日の経過とともに、下から静かに水が溜まっていく */}
       {water}
       <Header

@@ -2410,3 +2410,11 @@ input[type='range'] {
 .compact-mode .bubble-field {
   zoom: 0.6;
 }
+
+/* ライトテーマ: 明るい壁紙の上でも縁がわかるよう、外枠と影を少し強める */
+.widget[data-theme='light'] {
+  border-color: rgba(20, 30, 60, 0.14);
+  box-shadow:
+    0 14px 36px rgba(30, 40, 80, 0.22),
+    0 1px 3px rgba(30, 40, 80, 0.12);
+}
